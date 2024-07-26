@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "380670514801",
+    "project_id": "course-hotelio-50f61",
+    "storage_bucket": "course-hotelio-50f61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:380670514801:android:9af92cbac686d5391e6dd0",
+        "android_client_info": {
+          "package_name": "com.yogadimas.hotelio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqYge5pNUOwX9RyHoGDCgTNziZjThKk8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
