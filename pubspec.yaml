@@ -51,6 +51,15 @@ dependencies:
   # Google Font
   google_fonts: ^6.2.1
 
+  # firebase auth
+  firebase_auth: ^5.1.2
+
+  # firebase firestore
+  cloud_firestore: ^5.1.0
+
+  # d info
+  d_info: ^0.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

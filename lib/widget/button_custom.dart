@@ -53,10 +53,10 @@ class ButtonCustom extends StatelessWidget {
                           : null,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 36.0, vertical: 12),
-                  child: const Text(
-                    "Get Started",
+                  child: Text(
+                    label,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900),
                   ),
                 ),
               ),
