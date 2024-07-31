@@ -63,6 +63,9 @@ dependencies:
   # rating bar
   flutter_rating_bar: ^4.0.1
 
+  # grouped list
+  grouped_list: ^6.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -99,7 +102,7 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
+  # in this "flutter" section. Each entry in this  list should have a
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:

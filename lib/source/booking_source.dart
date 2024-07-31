@@ -54,4 +54,14 @@ class BookingSource {
     // -- Dalam SQL, ini tidak relevan karena kita tidak mengembalikan nilai dari query, tetapi dalam konteks aplikasi kita dapat menganggap operasi selesai sukses.
   }
 
+  static Future<List<Booking>> getHistory(String id) async{
+    var result = await FirebaseFirestore.instance
+    .collection("User")
+    .doc(id)
+    .collection("Booking")
+    .get();
+
+    return result.docs.map((e) => Booking.fromJson(e.data())).toList();
+  }
+
 }
