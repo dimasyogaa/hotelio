@@ -2,8 +2,10 @@ import 'package:course_hotelio/config/app_asset.dart';
 import 'package:course_hotelio/config/app_color.dart';
 import 'package:course_hotelio/config/app_format.dart';
 import 'package:course_hotelio/config/app_route.dart';
+import 'package:course_hotelio/config/session.dart';
 import 'package:course_hotelio/controller/c_nearby.dart';
 import 'package:course_hotelio/model/hotel.dart';
+import 'package:course_hotelio/page/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
@@ -15,31 +17,36 @@ class NearbyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(
-          height: 24,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: FocusScope(
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 24,
+            ),
+            header(context),
+            const SizedBox(
+              height: 20,
+            ),
+            searchField(),
+            const SizedBox(
+              height: 30,
+            ),
+            categories(),
+            const SizedBox(
+              height: 30,
+            ),
+            hotels(),
+        
+            //
+          ],
         ),
-        header(context),
-        const SizedBox(
-          height: 20,
-        ),
-        searchField(),
-        const SizedBox(
-          height: 30,
-        ),
-        categories(),
-        const SizedBox(
-          height: 30,
-        ),
-        hotels(),
-
-        //
-      ],
+      ),
     );
   }
-
-
 
   Padding header(BuildContext context) {
     return Padding(
@@ -48,15 +55,72 @@ class NearbyPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           //
-          ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: Image.asset(
-              AppAsset.profile,
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
+          /// LOGOUT
+          //
+          GestureDetector(
+            onTap: () {
+              showMenu(
+                context: context,
+                position: const RelativeRect.fromLTRB(0, 120, 100, 0), // Adjust position as needed
+                items: [
+                  const PopupMenuItem(
+                    value: 'logout',
+                    child: Text('Logout'),
+                  ),
+                ],
+              ).then((value) {
+                if (value == 'logout') {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Logout'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('Cancel', style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w700
+                            ),),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Logout',style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w700
+                            ),),
+                            onPressed: () {
+                              Session.clearUser();
+                              Get.offAll(() => SigninPage());
+                              // Navigator.pushReplacementNamed(context, AppRoute.signin);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              });
+
+              //
+
+            },
+
+            //
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(50),
+              child: Image.asset(
+                AppAsset.profile,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
+
+          /// -------------- END LOGOUT
 
           //
           Column(
@@ -70,12 +134,11 @@ class NearbyPage extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.w900),
               ),
               Obx(() {
-                  return Text(
-                    '${cNearby.listHotel.length} hotels',
-                    style: TextStyle(color: Colors.grey, fontSize: 12),
-                  );
-                }
-              ),
+                return Text(
+                  '${cNearby.listHotel.length} hotels',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                );
+              }),
             ],
 
             //
@@ -104,6 +167,10 @@ class NearbyPage extends StatelessWidget {
 
             //
             child: TextField(
+              controller: cNearby.searchController,
+              focusNode: FocusNode(),
+
+              //
               decoration: InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -170,7 +237,7 @@ class NearbyPage extends StatelessWidget {
                 //
                 child: Material(
                   color:
-                  category == _.category ? AppColor.primary : Colors.white,
+                      category == _.category ? AppColor.primary : Colors.white,
                   borderRadius: BorderRadius.circular(20),
 
                   //
@@ -214,11 +281,14 @@ class NearbyPage extends StatelessWidget {
 
   GetBuilder<CNearby> hotels() {
     return GetBuilder<CNearby>(builder: (_) {
+      // List<Hotel> list = _.category == 'All Place'
+      //     ? _.listHotel
+      //     : _.listHotel.where((e) => e.category == cNearby.category).toList();
+
+      //
       List<Hotel> list = _.category == 'All Place'
-          ? _.listHotel
-          : _.listHotel
-          .where((e) => e.category == cNearby.category)
-          .toList();
+          ? _.filteredHotels
+          : _.filteredHotels.where((e) => e.category == cNearby.category).toList();
 
       //
       if (list.isEmpty) return const Center(child: Text('Empty'));
@@ -244,17 +314,16 @@ class NearbyPage extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.fromLTRB(16, index == 0 ? 0 : 8, 16,
                     index == list.length - 1 ? 16 : 8),
-              
+
                 //
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20)
-                ),
-              
+                    borderRadius: BorderRadius.circular(20)),
+
                 //
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-              
+
                   //
                   children: [
                     ClipRRect(
@@ -262,7 +331,7 @@ class NearbyPage extends StatelessWidget {
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
                       ),
-              
+
                       //
                       child: AspectRatio(
                         aspectRatio: 16 / 9,
@@ -272,55 +341,55 @@ class NearbyPage extends StatelessWidget {
                         ),
                       ),
                     ),
-              
+
                     //
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 12),
-              
+
                       //
                       child: Row(
                         children: [
                           Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-              
-                                //
+                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                            //
+                            children: [
+                              Text(
+                                hotel.name,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+
+                              //
+                              Row(
                                 children: [
+                                  const Text('Start from ',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 13)),
                                   Text(
-                                    hotel.name,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium!
-                                        .copyWith(fontWeight: FontWeight.bold),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(
-                                    height: 4,
-                                  ),
-              
-                                  //
-                                  Row(
-                                    children: [
-                                      const Text('Start from ',
-                                          style: TextStyle(
-                                              color: Colors.grey, fontSize: 13)),
-                                      Text(
-                                          AppFormat.currency(
-                                              hotel.price.toDouble()),
-                                          style: const TextStyle(
-                                              color: AppColor.secondary,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold)),
-                                      const Text('/night',
-                                          style: TextStyle(
-                                              color: Colors.grey, fontSize: 13)),
-                                    ],
-                                  )
+                                      AppFormat.currency(
+                                          hotel.price.toDouble()),
+                                      style: const TextStyle(
+                                          color: AppColor.secondary,
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold)),
+                                  const Text('/night',
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 13)),
                                 ],
-                              )),
-              
+                              )
+                            ],
+                          )),
+
                           //
                           RatingBar.builder(
                             initialRating: hotel.rate,
@@ -351,5 +420,4 @@ class NearbyPage extends StatelessWidget {
       //
     });
   }
-
 }

@@ -1,0 +1,9 @@
+flutter pub cache clean
+delete pubspec.lock
+flutter pub get
+
+
+flutter build apk --release
+
+lebih kecil (compress) ABI
+flutter build apk --split-per-abi

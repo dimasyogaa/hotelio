@@ -1,0 +1,33 @@
+
+system environment
+E:\Program Files\Android\Android Studio\jbr\bin\keytool.exe 
+
+
+terminal
+keytool -genkey -v -keystore C:\Users\User\FlutterDeployment\hotelio\hotelio-upload-keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias yogadimashotelio
+
+
+alias: yogadimashotelio
+keystore password: yogadimashotelio123store
+first last: Yoga Dimas
+organizational unit: Mobile App Development
+organization: Yogadimas
+city: Semarang
+state: Central Java
+country code: ID
+
+key password: yogadimashotelio123key
+
+storing: C:\Users\User\FlutterDeployment\hotelio\UsersUserFlutterDeploymenthoteliohotelio-upload-keystore.jks
+
+Android
+https://docs.flutter.dev/deployment/android
+
+key.properties:
+storePassword=yogadimashotelio123store
+keyPassword=yogadimashotelio123key
+keyAlias=yogadimashotelio
+storeFile=C:/Users/User/FlutterDeployment/hotelio/UsersUserFlutterDeploymenthoteliohotelio-upload-keystore.jks
+
+playstore :
+flutter build appbundle
